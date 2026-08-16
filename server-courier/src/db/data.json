@@ -1,0 +1,47 @@
+{
+  "ivaPct": 12,
+  "aranceles": [
+    { "categoria": "ropa", "arancelPct": 15 },
+    { "categoria": "calzado", "arancelPct": 20 },
+    { "categoria": "electronica", "arancelPct": 5 },
+    { "categoria": "juguetes", "arancelPct": 15 },
+    { "categoria": "cosmeticos", "arancelPct": 15 },
+    { "categoria": "accesorios", "arancelPct": 15 },
+    { "categoria": "libros", "arancelPct": 0 },
+    { "categoria": "deportes", "arancelPct": 10 },
+    { "categoria": "hogar", "arancelPct": 15 },
+    { "categoria": "suplementos", "arancelPct": 15 },
+    { "categoria": "perfumes", "arancelPct": 15 },
+    { "categoria": "otros", "arancelPct": 15 }
+  ],
+  "restricciones": [
+    { "categoria": "ropa", "estado": "permitido", "requisitos": null },
+    { "categoria": "calzado", "estado": "permitido", "requisitos": null },
+    { "categoria": "electronica", "estado": "permitido", "requisitos": "Los equipos con batería de litio integrada requieren declaración expresa de mercancía peligrosa (IATA)." },
+    { "categoria": "juguetes", "estado": "permitido", "requisitos": null },
+    { "categoria": "cosmeticos", "estado": "restringido", "requisitos": "Requiere registro sanitario del Ministerio de Salud para lotes mayores a 3 unidades del mismo producto." },
+    { "categoria": "suplementos", "estado": "restringido", "requisitos": "Uso personal permitido hasta 3 unidades; lotes mayores requieren registro sanitario." },
+    { "categoria": "medicamentos", "estado": "restringido", "requisitos": "Requiere receta médica y se limita a cantidades para tratamiento personal." },
+    { "categoria": "armas", "estado": "prohibido", "requisitos": "Prohibida su importación por casillero, incluyendo réplicas y municiones." },
+    { "categoria": "baterias_litio_sueltas", "estado": "prohibido", "requisitos": "Baterías de litio sueltas (no integradas a un dispositivo) no se aceptan por regulación de transporte aéreo IATA." },
+    { "categoria": "perfumes", "estado": "restringido", "requisitos": "Contienen alcohol; se transportan únicamente vía marítima, con tiempo de entrega extendido." },
+    { "categoria": "libros", "estado": "permitido", "requisitos": null },
+    { "categoria": "deportes", "estado": "permitido", "requisitos": null },
+    { "categoria": "hogar", "estado": "permitido", "requisitos": null },
+    { "categoria": "accesorios", "estado": "permitido", "requisitos": null },
+    { "categoria": "otros", "estado": "permitido", "requisitos": "Sujeto a revisión aduanal; puede requerir documentación adicional." }
+  ],
+  "tarifarioFlete": {
+    "costoPorLibra": 5.5,
+    "cargoMinimo": 12,
+    "manejoFijo": 6
+  },
+  "sucursales": [
+    { "departamento": "Guatemala", "nombre": "Sucursal Zona 10", "direccion": "6a Avenida 12-34, Zona 10, Ciudad de Guatemala", "horario": "L-V 9:00-18:00, S 9:00-13:00" },
+    { "departamento": "Guatemala", "nombre": "Sucursal Miraflores", "direccion": "Centro Comercial Miraflores, Local 205, Zona 11", "horario": "L-S 10:00-19:00" },
+    { "departamento": "Quetzaltenango", "nombre": "Sucursal Xela Centro", "direccion": "7a Calle 12-20, Zona 1, Quetzaltenango", "horario": "L-V 9:00-17:30" },
+    { "departamento": "Escuintla", "nombre": "Sucursal Escuintla", "direccion": "4a Avenida 3-15, Zona 1, Escuintla", "horario": "L-V 9:00-17:00" },
+    { "departamento": "Sacatepéquez", "nombre": "Sucursal Antigua Guatemala", "direccion": "5a Avenida Norte 10, Antigua Guatemala", "horario": "L-S 9:00-18:00" }
+  ],
+  "paquetes": []
+}
