@@ -5,5 +5,4 @@ node_modules/
 server-courier/src/db/state.json
 *.log
 .DS_Store
-tools/
 transports/
