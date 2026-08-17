@@ -1,7 +1,9 @@
-// Connects to multiple MCP servers at once and presents them to the Anthropic
+// Connects to multiple MCP servers at once and presents them to the LLM
 // tool-use loop as one flat, unambiguous tool list. Tool names are namespaced
 // as "<serverId>__<toolName>" so servers with overlapping tool names (e.g. two
-// filesystem-like servers) can coexist.
+// filesystem-like servers) can coexist. Kept in MCP's own shape (name,
+// description, inputSchema) — provider-specific conversion (Anthropic,
+// OpenAI-compatible, etc.) happens in the LLM client, not here.
 import { createStdioTransport, createMcpClient } from "./mcpClient.js";
 
 export function createMcpManager({ onLog } = {}) {
@@ -15,7 +17,7 @@ export function createMcpManager({ onLog } = {}) {
     return client;
   }
 
-  async function getAnthropicTools() {
+  async function getToolDefinitions() {
     const tools = [];
     for (const client of clients.values()) {
       const list = await client.listTools();
@@ -23,7 +25,7 @@ export function createMcpManager({ onLog } = {}) {
         tools.push({
           name: `${client.id}__${t.name}`,
           description: `[${client.id}] ${t.description}`,
-          input_schema: t.inputSchema,
+          inputSchema: t.inputSchema,
         });
       }
     }
@@ -44,5 +46,5 @@ export function createMcpManager({ onLog } = {}) {
     for (const client of clients.values()) client.close();
   }
 
-  return { connectStdio, getAnthropicTools, callTool, closeAll };
+  return { connectStdio, getToolDefinitions, callTool, closeAll };
 }

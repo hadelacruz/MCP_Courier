@@ -1,14 +1,14 @@
 {
   "name": "mcp-courier-client-host",
   "version": "0.1.0",
-  "description": "Host + MCP client for the courier chatbot: connects to MCP servers over stdio (and later HTTP) via a hand-rolled JSON-RPC client, and drives the tool-use loop against the Anthropic Messages API.",
+  "description": "Host + MCP client for the courier chatbot: connects to MCP servers over stdio (and later HTTP) via a hand-rolled JSON-RPC client, and drives the tool-use loop against an OpenAI-compatible chat completions API.",
   "type": "module",
   "main": "src/cli.js",
   "scripts": {
     "start": "node src/cli.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.1",
+    "openai": "^4.68.0",
     "dotenv": "^16.4.5"
   },
   "engines": {
