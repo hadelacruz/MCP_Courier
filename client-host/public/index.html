@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MCP Courier</title>
+<link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">📦</span>
+        <div>
+          <h1>MCP Courier</h1>
+          <p class="tagline">Cotiza, registra y rastrea tus importaciones EE. UU. → Guatemala</p>
+        </div>
+      </div>
+      <ul class="server-status" id="server-status" aria-live="polite"></ul>
+    </header>
+
+    <main class="layout">
+      <section class="chat-panel" aria-label="Conversación con el asistente">
+        <div class="messages" id="messages">
+          <div class="empty-state" id="empty-state">
+            <p>Pregúntame algo como:</p>
+            <ul>
+              <li>"Compré unos audífonos de $60, pesan 1 libra, categoría electrónica. ¿Cuánto me sale traerlos?"</li>
+              <li>"¿Puedo importar perfumes?"</li>
+              <li>"Registra un paquete de Ana López: una laptop de $800, 5 libras, electrónica."</li>
+            </ul>
+          </div>
+        </div>
+        <form class="composer" id="composer">
+          <textarea
+            id="input"
+            placeholder="Escribe tu mensaje... (Enter envía, Shift+Enter salto de línea)"
+            rows="1"
+            aria-label="Mensaje para el asistente"
+          ></textarea>
+          <button type="submit" id="send-btn" aria-label="Enviar mensaje">Enviar</button>
+        </form>
+      </section>
+
+      <aside class="side-panel">
+        <section class="card" aria-label="Servidores MCP conectados">
+          <h2>Servidores MCP</h2>
+          <ul class="server-list" id="server-list"></ul>
+        </section>
+
+        <section class="card log-card" aria-label="Log de interacciones MCP">
+          <div class="log-header">
+            <h2>Log de interacciones MCP</h2>
+            <button type="button" id="clear-log-btn" title="Limpiar la vista (no borra el historial del servidor)">Limpiar</button>
+          </div>
+          <div class="log-list" id="log-list" aria-live="polite"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

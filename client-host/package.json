@@ -5,11 +5,13 @@
   "type": "module",
   "main": "src/cli.js",
   "scripts": {
-    "start": "node src/cli.js"
+    "start": "node src/cli.js",
+    "web": "node src/server.js"
   },
   "dependencies": {
     "openai": "^4.68.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
   },
   "engines": {
     "node": ">=18"
