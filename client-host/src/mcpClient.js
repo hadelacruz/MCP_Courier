@@ -9,12 +9,18 @@ import { makeRequest, makeNotification } from "./jsonrpc.js";
 const REQUEST_TIMEOUT_MS = 15000;
 let nextId = 1;
 
-export function createStdioTransport({ command, args = [], cwd, env }) {
-  const child = spawn(command, args, {
+export function createStdioTransport({ command, args, cwd, env, shell = false }) {
+  const spawnOptions = {
     cwd,
     env: { ...process.env, ...env },
     stdio: ["pipe", "pipe", "pipe"],
-  });
+    shell,
+  };
+  // Two call shapes on purpose: with an args array (the normal, safe case),
+  // or with `command` as one pre-quoted string and shell:true (needed for
+  // Windows .cmd shims like npx.cmd, where Node's own array-to-command-line
+  // quoting has proven unreliable with paths that contain spaces).
+  const child = args ? spawn(command, args, spawnOptions) : spawn(command, spawnOptions);
 
   let onMessage = () => {};
   const rl = readline.createInterface({ input: child.stdout, terminal: false });

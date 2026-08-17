@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createMcpManager } from "./mcpManager.js";
 import { createChatEngine } from "./llmClient.js";
 import { logInteraction, getLogs } from "./logger.js";
+import { officialServers, WORKSPACE_DIR } from "./officialServers.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const COURIER_SERVER_ENTRY = path.join(__dirname, "..", "..", "server-courier", "src", "index.js");
@@ -21,7 +22,16 @@ async function main() {
   const mcpManager = createMcpManager({ onLog: logInteraction });
   await mcpManager.connectStdio("courier", process.execPath, [COURIER_SERVER_ENTRY]);
 
-  const chatEngine = createChatEngine({ mcpManager });
+  for (const server of officialServers) {
+    try {
+      await mcpManager.connectStdio(server.id, server.command, server.args, { shell: server.shell });
+      console.log(`Conectado a servidor MCP oficial "${server.id}".`);
+    } catch (err) {
+      console.error(`No se pudo conectar al servidor MCP "${server.id}": ${err.message}`);
+    }
+  }
+
+  const chatEngine = createChatEngine({ mcpManager, workspaceDir: WORKSPACE_DIR });
   const sessionId = "cli-session";
 
   console.log("MCP Courier — chatbot de consola.");

@@ -9,14 +9,23 @@ import { getHistory } from "./sessionManager.js";
 const MODEL = process.env.LLM_MODEL;
 const MAX_TOOL_ROUNDTRIPS = 8;
 
-const SYSTEM_PROMPT = `Eres el asistente virtual de un courier de importación entre Estados Unidos y Guatemala.
+function buildSystemPrompt(workspaceDir) {
+  return `Eres el asistente virtual de un courier de importación entre Estados Unidos y Guatemala.
 Ayudas a clientes a entender restricciones de importación, calcular impuestos, cotizar el costo total
-de traer un producto, registrar paquetes en su casillero y rastrearlos.
+de traer un producto, registrar paquetes en su casillero y rastrearlos. También puedes gestionar archivos
+y un repositorio Git de trabajo cuando el usuario lo pida (por ejemplo, generar y versionar un reporte).
 
 Usa las herramientas disponibles para responder con datos reales en vez de inventar cifras. Si una
 pregunta requiere varios datos (por ejemplo una cotización completa), encadena las herramientas que
 necesites antes de responder. Responde siempre en español, de forma clara y con el desglose de costos
-cuando aplique.`;
+cuando aplique.
+
+${workspaceDir ? `Para las herramientas de archivos ("fs__...") y de Git ("git__..."), el directorio/repositorio
+de trabajo es exactamente: ${workspaceDir}
+Ya existe como repositorio Git inicializado (no tienes ni necesitas una herramienta de "git init"; si
+intentas usar una y no existe, asume que el repo ya está listo en esa ruta). Usa siempre esa ruta como
+"path"/"repo_path" salvo que el usuario pida explícitamente otra ubicación.` : ""}`;
+}
 
 function toOpenAiTool(mcpTool) {
   return {
@@ -29,11 +38,12 @@ function toOpenAiTool(mcpTool) {
   };
 }
 
-export function createChatEngine({ mcpManager, apiKey, baseURL }) {
+export function createChatEngine({ mcpManager, apiKey, baseURL, workspaceDir }) {
   const client = new OpenAI({
     apiKey: apiKey ?? process.env.LLM_API_KEY,
     baseURL: baseURL ?? process.env.LLM_BASE_URL,
   });
+  const systemPrompt = buildSystemPrompt(workspaceDir);
 
   async function chat(sessionId, userText) {
     const history = getHistory(sessionId);
@@ -45,7 +55,7 @@ export function createChatEngine({ mcpManager, apiKey, baseURL }) {
     for (let round = 0; round < MAX_TOOL_ROUNDTRIPS; round++) {
       const response = await client.chat.completions.create({
         model: MODEL,
-        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...history],
+        messages: [{ role: "system", content: systemPrompt }, ...history],
         tools,
       });
 
