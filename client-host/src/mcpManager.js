@@ -4,13 +4,21 @@
 // filesystem-like servers) can coexist. Kept in MCP's own shape (name,
 // description, inputSchema) — provider-specific conversion (Anthropic,
 // OpenAI-compatible, etc.) happens in the LLM client, not here.
-import { createStdioTransport, createMcpClient } from "./mcpClient.js";
+import { createStdioTransport, createHttpTransport, createMcpClient } from "./mcpClient.js";
 
 export function createMcpManager({ onLog } = {}) {
   const clients = new Map();
 
   async function connectStdio(id, command, args, opts = {}) {
     const transport = createStdioTransport({ command, args, ...opts });
+    const client = createMcpClient({ id, transport, onLog });
+    await client.initialize();
+    clients.set(id, client);
+    return client;
+  }
+
+  async function connectHttp(id, url) {
+    const transport = createHttpTransport({ url });
     const client = createMcpClient({ id, transport, onLog });
     await client.initialize();
     clients.set(id, client);
@@ -46,5 +54,5 @@ export function createMcpManager({ onLog } = {}) {
     for (const client of clients.values()) client.close();
   }
 
-  return { connectStdio, getToolDefinitions, callTool, closeAll };
+  return { connectStdio, connectHttp, getToolDefinitions, callTool, closeAll };
 }

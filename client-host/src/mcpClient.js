@@ -1,7 +1,8 @@
 // Generic MCP client: handshake + request/response matching, decoupled from
-// the transport. StdioTransport is implemented here for local child-process
-// servers (Fase 5 adds an HttpTransport with the same {send, onMessage} shape
-// so createMcpClient below doesn't need to change).
+// the transport. StdioTransport is for local child-process servers;
+// HttpTransport (below) is for the remote courier server on EC2 — same
+// {onReceive, send, close} shape, so createMcpClient doesn't care which one
+// it's talking to.
 import { spawn } from "node:child_process";
 import readline from "node:readline";
 import { makeRequest, makeNotification } from "./jsonrpc.js";
@@ -43,6 +44,49 @@ export function createStdioTransport({ command, args, cwd, env, shell = false })
     close() {
       child.stdin.end();
       child.kill();
+    },
+  };
+}
+
+// Talks to server-courier's HTTP transport (server-courier/src/transports/http.js):
+// one POST per JSON-RPC message to <url> (e.g. http://EC2_IP:8787/mcp). Each
+// request's own HTTP response carries the matching JSON-RPC reply, so it's
+// wired straight into onReceive — no separate push channel needed, since this
+// server never sends unsolicited messages. The Mcp-Session-Id the server hands
+// back on "initialize" is remembered and echoed on every later call.
+export function createHttpTransport({ url }) {
+  let onMessage = () => {};
+  let sessionId;
+
+  async function post(text) {
+    const headers = { "Content-Type": "application/json" };
+    if (sessionId) headers["Mcp-Session-Id"] = sessionId;
+
+    const res = await fetch(url, { method: "POST", headers, body: text });
+
+    const newSessionId = res.headers.get("mcp-session-id");
+    if (newSessionId) sessionId = newSessionId;
+
+    if (res.status === 202) return; // notification: no JSON-RPC reply expected
+
+    const body = await res.text();
+    if (body) onMessage(body);
+  }
+
+  return {
+    onReceive(handler) {
+      onMessage = handler;
+    },
+    send(text) {
+      // Fire-and-forget from the caller's perspective (mcpClient.request()
+      // resolves via onMessage, not via this promise) — but still catch
+      // failures here so a network error doesn't become an unhandled rejection.
+      post(text).catch((err) => {
+        console.error(`[http-transport] request to ${url} failed: ${err.message}`);
+      });
+    },
+    close() {
+      // Plain request/response over HTTP — nothing to tear down.
     },
   };
 }

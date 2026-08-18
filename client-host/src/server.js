@@ -11,9 +11,9 @@ import { createMcpManager } from "./mcpManager.js";
 import { createChatEngine } from "./llmClient.js";
 import { logInteraction, getLogs, logEvents } from "./logger.js";
 import { officialServers, WORKSPACE_DIR } from "./officialServers.js";
+import { connectCourier } from "./connectCourier.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const COURIER_SERVER_ENTRY = path.join(__dirname, "..", "..", "server-courier", "src", "index.js");
 const PUBLIC_DIR = path.join(__dirname, "..", "public");
 const PORT = process.env.PORT || 3000;
 
@@ -26,7 +26,7 @@ async function main() {
   const mcpManager = createMcpManager({ onLog: logInteraction });
   const serverStatus = [];
 
-  await mcpManager.connectStdio("courier", process.execPath, [COURIER_SERVER_ENTRY]);
+  await connectCourier(mcpManager);
   serverStatus.push({ id: "courier", connected: true });
 
   for (const server of officialServers) {
