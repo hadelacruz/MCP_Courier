@@ -9,9 +9,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Sandboxed on purpose: Filesystem's "allowed directories" and Git's
 // "repo_path" both point here, so the LLM can never touch anything outside
-// this folder. Bootstrapped once with `git init` outside the chatbot, because
-// the official git server has no init tool (see README/docs for details).
-export const WORKSPACE_DIR = path.join(__dirname, "..", "workspace");
+// this folder. Must already exist as an initialized git repo (`git init` +
+// a local git identity) before the chatbot uses it — the official git server
+// has no init tool (see README/docs for details). Override via MCP_WORKSPACE_DIR
+// in .env; falls back to client-host/workspace if unset.
+export const WORKSPACE_DIR = process.env.MCP_WORKSPACE_DIR
+  ? path.resolve(process.env.MCP_WORKSPACE_DIR)
+  : path.join(__dirname, "..", "workspace");
 
 const isWindows = process.platform === "win32";
 const quote = (value) => (/\s/.test(value) ? `"${value}"` : value);
