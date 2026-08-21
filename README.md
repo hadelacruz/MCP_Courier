@@ -1,8 +1,5 @@
 # MCP Courier
 
-A console/web chatbot host that talks to multiple **Model Context Protocol (MCP)**
-servers — built for CC3067 Redes (Universidad del Valle de Guatemala), Project 1.
-
 The chatbot acts as an import courier assistant for a US → Guatemala shipping
 business: it quotes import costs, checks product restrictions, registers and
 tracks packages, and can also manage files and a Git repository through the
