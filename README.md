@@ -280,3 +280,23 @@ HTTP deployment is not guaranteed to work with Claude Desktop/Claude.ai's
 remote-connector feature as-is, since that expects full compliance with the
 Streamable HTTP spec (this project's HTTP transport implements a simplified
 subset sufficient for `client-host` — see [Known limitations](#known-limitations)).
+
+## AI usage disclosure
+
+This project was developed with the assistance of **Claude Code** (Anthropic),
+used as a development aid rather than to generate the project unsupervised:
+drafting and iterating on the phased implementation plan, writing and
+reviewing code section by section, debugging platform-specific issues (e.g.
+the Windows `npx`/`uvx` spawn quirks, the missing `git init` tool in the
+official Git server, a Node.js `fetch` compatibility issue), and verifying
+the end-to-end flow at each phase (local MCP handshake, the web UI in an
+actual browser, and the remote HTTP deployment against the EC2 instance).
+All architectural decisions, testing, and the final deployment were reviewed
+and directed by the author. Used per UVG's generative AI usage policy.
+
+## References
+
+1. Anthropic. *Model Context Protocol Specification (2025-11-25)*. <https://modelcontextprotocol.io/specification/2025-11-25>
+2. Anthropic. *MCP Architecture*. <https://modelcontextprotocol.io/docs/learn/architecture>
+3. JSON-RPC Working Group. *JSON-RPC 2.0 Specification*. <https://www.jsonrpc.org/specification>
+4. Model Context Protocol. *Official servers repository (Filesystem, Git)*. <https://github.com/modelcontextprotocol/servers>
